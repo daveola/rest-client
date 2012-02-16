@@ -217,6 +217,11 @@ use whatever proxy the system is configured to use:
 
   RestClient.proxy = ENV['http_proxy']
 
+You can also set proxies on a per-Resource basis:
+
+  resource = RestClient::Resource.new(url, :proxy => auth.proxy)
+  response = resource.get()
+
 == Query parameters
 
 Request objects know about query parameters and will automatically add them to

@@ -26,7 +26,7 @@ module RestClient
   class Request
 
     attr_reader :method, :url, :headers, :cookies,
-                :payload, :user, :password, :timeout, :max_redirects,
+                :payload, :user, :password, :timeout, :max_redirects, :proxy,
                 :open_timeout, :raw_response, :verify_ssl, :ssl_client_cert,
                 :ssl_client_key, :ssl_ca_file, :processed_headers, :args
 
@@ -56,6 +56,7 @@ module RestClient
       @ssl_ca_file = args[:ssl_ca_file] || nil
       @tf = nil # If you are a raw request, this is your tempfile
       @max_redirects = args[:max_redirects] || 10
+			@proxy = args[:proxy]
       @processed_headers = make_headers headers
       @args = args
     end
@@ -96,8 +97,8 @@ module RestClient
     end
 
     def net_http_class
-      if RestClient.proxy
-        proxy_uri = URI.parse(RestClient.proxy)
+      if RestClient.proxy || @proxy
+        proxy_uri = URI.parse(RestClient.proxy || @proxy)
         Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
       else
         Net::HTTP
